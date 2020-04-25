@@ -16,31 +16,43 @@ class Deck {
     constructor() {
         this.cards = [];
     }
-    makeDeck() {
+    // this method creates an array of card objects, accepts arg for number of standard decks
+    makeDeck(size = 1) {
         const suits = ['Clubs', 'Diamonds', 'Hearts', 'Spades'];
         const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
         const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-        for (let i=0; i < suits.length; i++) {
-            for (let j=0; j < ranks.length; j++) {
-                this.cards.push(new Card(suits[i], ranks[j], values[j]));
+        while (size > 0) {
+            size --;
+            for (let i=0; i < (suits.length); i++) {
+                for (let j=0; j < ranks.length; j++) {
+                    this.cards.push(new Card(suits[i], ranks[j], values[j]));
             }
         }
     }
+        console.log('Deck has been made!')
+    }
+    // this method shuffles the deck
     shuffleDeck() {
         let m = this.cards.length, i;
         while (m) {
             i = Math.floor(Math.random() * m--);
             [this.cards[m], this.cards[i]] = [this.cards[i], this.cards[m]];
         }
+        console.log('Deck has been shuffled!')
+    }
+    // this method cuts the deck, 'top' half is moved to the 'bottom'
+    cutDeck() {
+        let m = (this.cards.length / 2);
+        for (let i=0; i<m; i++) {
+            let j = this.cards.shift();
+            this.cards.push(j);
+        }
+        console.log('Deck has been cut!')
     }
 }
 
 
-// ugly display testing below VVV
-const myDeck = new Deck();
-myDeck.makeDeck();
-myDeck.shuffleDeck();
-
+// ugly display testing below
 function showDeck() {
     for (let i=0; i<myDeck.cards.length; i++) {
         addElement(myDeck.cards[i]);
@@ -48,7 +60,6 @@ function showDeck() {
 }
 
 function addElement(card) { 
-    console.log(card);
     // create a new div element 
     let newDiv = document.createElement("div"); 
     // and give it some content 
@@ -62,4 +73,8 @@ function addElement(card) {
     document.body.insertBefore(newDiv, currentDiv); 
   }
 
-  showDeck();
+const myDeck = new Deck();
+myDeck.makeDeck();
+myDeck.shuffleDeck();
+myDeck.cutDeck();
+showDeck();
