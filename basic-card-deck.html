@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="basic-card-deck.css">
     <title>Card Deck Modeling in JS</title>
 </head>
 <body>
-    <h2>On load, this creates a shuffled deck of 52 cards.</h2>
-    <p>Use the console to create other decks.</p>
-    <div id="div1">
-
+    <h2>Basic Card Deck in JS</h2>
+    <div class="deck">
+    <button id="dealbutton">Deal</button>
+    <button id="deal5button">Deal 5</button>
+    <button id="shufflebutton">Shuffle</button>
+    <button id="cutbutton">Cut</button>
     </div>
-
+    <div id="deck" class="deck"></div>
+    <div id="dealt" class="deck"></div>
     <script src="basic-card-deck.js"></script>
 </body>
 </html>

@@ -4,8 +4,8 @@
 //TODO
 // add argument validation on makeDeck method
 // add argument validation to dealCards method
-// implement splitDeck method
 // create a subclass for non-standard deck configurations (no face cards, etc)
+// make the hand a class/pbject
 
 
 // Each card should be an object, so let's make a class
@@ -28,13 +28,13 @@ class Deck {
         const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
         const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
         while (size > 0) {
-            size --;
-            for (let i=0; i < (suits.length); i++) {
-                for (let j=0; j < ranks.length; j++) {
+            size--;
+            for (let i = 0; i < (suits.length); i++) {
+                for (let j = 0; j < ranks.length; j++) {
                     this.cards.push(new Card(suits[i], ranks[j], values[j]));
+                }
             }
         }
-    }
         console.log('Deck has been made!')
     }
     // this method shuffles the deck
@@ -49,68 +49,126 @@ class Deck {
     // this method cuts the deck, 'top' half is moved to the 'bottom'
     cutDeck() {
         let m = (this.cards.length / 2);
-        for (let i=0; i<m; i++) {
+        for (let i = 0; i < m; i++) {
             let j = this.cards.shift();
             this.cards.push(j);
-            console.log(i, j);
         }
         console.log('Deck has been cut!')
     }
-    // this method splits the deck object into two objects (deckname1/deckname2)
-    splitDeck() {
-        console.log('Split deck method is not implemented yet.')
-        // get name of current deck    
-        // create two new Deck instances using current deck name, append 1 & 2
-        // take top half of current deck, push into currentdeck1, other half into currentdeck2
-        // destroy current deck?
-        // Am I gonna have scoping/persistence issues on this?
-    }
-    //this method returns the 'top' card from the deck
+    //this method returns the 'top' card from the deck in an array
     dealCard() {
         console.log('Card dealt!');
-        return this.cards.shift();
+        let dealtCards = [];
+        dealtCards.push(this.cards.shift());
+        return dealtCards;
     }
     //this method returns the specified number of cards from the 'top' as an array of card objects
     dealCards(num) {
         console.log(`${num} cards dealt!`);
         let dealtCards = [];
-        for (let i=num; i>0; i--) {
+        for (let i = num; i > 0; i--) {
             dealtCards.push(this.cards.shift());
         }
         return dealtCards;
     }
 }
 
-
+//
 // ugly display testing below
-function showDeck() {
-    for (let i=0; i<myDeck.cards.length; i++) {
-        addElement(myDeck.cards[i]);
+//
+
+function showDeck(deckName) {
+    document.getElementById('deck').innerHTML = '';
+    for (let i = 0; i < deckName.cards.length; i++) {
+        cardBuilder(deckName.cards[i]);
     }
 }
 
-function addElement(card) { 
-    // create a new div element 
-    let newDiv = document.createElement("div"); 
-    // and give it some content 
-    let newContent = document.createTextNode(`Suit: ${card.suit} // Rank: ${card.rank} // Value: ${card.value}`); 
-    let spacer = document.createElement("p");
-    // add the text node to the newly created div
-    newDiv.appendChild(newContent); 
-    newDiv.appendChild(spacer);  
-    // add the newly created element and its content into the DOM 
-    let currentDiv = document.getElementById("div1"); 
-    document.body.insertBefore(newDiv, currentDiv); 
-  }
+function cardBuilder(card) {
+    let newcard = document.createElement("div");
+    let icon = '';
+    if (card.suit == 'Hearts') {
+        icon = '♥';
+        newcard.className = 'card red';
+    }
+    else if (card.suit == 'Spades') {
+        icon = '♠';
+        newcard.className = 'card';
+    }
+    else if (card.suit == 'Diamonds') {
+        icon = '♦';
+        newcard.className = 'card red';
+    }
+    else {
+        icon = '♣'
+        newcard.className = 'card';;
+    }
+    newcard.innerHTML = `${card.rank}<p class="cardsuit">${icon}</p>`;
+    document.getElementById("deck").appendChild(newcard);
+}
 
-const myDeck = new Deck();
-myDeck.makeDeck();
-myDeck.shuffleDeck();
-myDeck.cutDeck();
-showDeck();
+function showDealt(dealtcards) {
+    document.getElementById('dealt').innerHTML = '';
+    for (let i = 0; i < dealtcards.length; i++) {
+        addHand(dealtcards[i]);
+    }
+}
 
+function addHand(card) {
+    let newcard = document.createElement("div");
+    let icon = '';
+    if (card.suit == 'Hearts') {
+        icon = '♥';
+        newcard.className = 'card red';
+    }
+    else if (card.suit == 'Spades') {
+        icon = '♠';
+        newcard.className = 'card';
+    }
+    else if (card.suit == 'Diamonds') {
+        icon = '♦';
+        newcard.className = 'card red';
+    }
+    else {
+        icon = '♣'
+        newcard.className = 'card';;
+    }
+    newcard.innerHTML = `${card.rank}<p class="cardsuit">${icon}</p>`;
+    document.getElementById("dealt").appendChild(newcard);
+}
 
-// cribbage
-// blackjack
-// poker
-// progression
+// test setup
+const testDeck = new Deck();
+testDeck.makeDeck(1);
+testDeck.shuffleDeck();
+testDeck.cutDeck();
+showDeck(testDeck);
+let testHand = [];
+
+// buttons
+const dealButton = document.getElementById("dealbutton");
+dealButton.addEventListener("click", function(){
+    testHand = testHand.concat(testDeck.dealCard())
+    showDealt(testHand);
+    showDeck(testDeck);
+})
+
+const deal5Button = document.getElementById("deal5button");
+deal5Button.addEventListener("click", function(){
+    testHand = testHand.concat(testDeck.dealCards(5))
+    showDealt(testHand);
+    showDeck(testDeck);
+})
+
+const shuffleButton = document.getElementById("shufflebutton");
+shuffleButton.addEventListener("click", function(){
+    testDeck.shuffleDeck();
+    showDeck(testDeck);
+})
+
+const cutButton = document.getElementById("cutbutton");
+cutButton.addEventListener("click", function(){
+    testDeck.cutDeck();
+    showDeck(testDeck);
+})
+
