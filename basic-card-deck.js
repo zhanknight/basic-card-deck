@@ -147,27 +147,27 @@ let testHand = [];
 
 // buttons
 const dealButton = document.getElementById("dealbutton");
-dealButton.addEventListener("click", function(){
+dealButton.addEventListener("click", function () {
     testHand = testHand.concat(testDeck.dealCard())
     showDealt(testHand);
     showDeck(testDeck);
 })
 
 const deal5Button = document.getElementById("deal5button");
-deal5Button.addEventListener("click", function(){
+deal5Button.addEventListener("click", function () {
     testHand = testHand.concat(testDeck.dealCards(5))
     showDealt(testHand);
     showDeck(testDeck);
 })
 
 const shuffleButton = document.getElementById("shufflebutton");
-shuffleButton.addEventListener("click", function(){
+shuffleButton.addEventListener("click", function () {
     testDeck.shuffleDeck();
     showDeck(testDeck);
 })
 
 const cutButton = document.getElementById("cutbutton");
-cutButton.addEventListener("click", function(){
+cutButton.addEventListener("click", function () {
     testDeck.cutDeck();
     showDeck(testDeck);
 })
