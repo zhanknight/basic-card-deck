@@ -4,8 +4,7 @@
 //TODO
 // add argument validation on makeDeck method
 // add argument validation to dealCards method
-// create a subclass for non-standard deck configurations (no face cards, etc)
-// make the hand a class/pbject
+// Better naming scheme?
 
 
 // Each card should be an object, so let's make a class
@@ -73,90 +72,101 @@ class Deck {
     }
 }
 
+// this subclass creates a deck with all face cards having a value of 10 for games that require it
+class Deck10 extends Deck {
+    makeDeck(size = 1) {
+        const suits = ['Clubs', 'Diamonds', 'Hearts', 'Spades'];
+        const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10];
+        while (size > 0) {
+            size--;
+            for (let i = 0; i < (suits.length); i++) {
+                for (let j = 0; j < ranks.length; j++) {
+                    this.cards.push(new Card(suits[i], ranks[j], values[j]));
+                }
+            }
+        }
+        console.log('Deck (10s) has been made!')
+    }
+}
+
+// this class creates a player with a hand, name, wins and losses. 
+class Player {
+    constructor(playername) {
+        this.cards = [];
+        this.name = playername;
+        this.wins = 0;
+        this.losses = 0;
+    }
+}
+
 //
 // ugly display testing below
 //
 
+// this function builds the html to display a card then appends it to the deck area html
+function cardBuilder(card, location) {
+    let newcard = document.createElement("div");
+    let icon = '';
+    // this is pretty hideous 
+    if (card.suit == 'Hearts') {
+        icon = '♥';
+        newcard.className = 'card red';
+    }
+    else if (card.suit == 'Spades') {
+        icon = '♠';
+        newcard.className = 'card';
+    }
+    else if (card.suit == 'Diamonds') {
+        icon = '♦';
+        newcard.className = 'card red';
+    }
+    else {
+        icon = '♣'
+        newcard.className = 'card';;
+    }
+    newcard.innerHTML = `${card.rank}<p class="cardsuit">${icon}</p>`;
+    document.getElementById(`${location}`).appendChild(newcard);
+}
+
+// this function resets the deck area html then iterates over all the card objects in the deck, callng cardBuilder for each
 function showDeck(deckName) {
     document.getElementById('deck').innerHTML = '';
     for (let i = 0; i < deckName.cards.length; i++) {
-        cardBuilder(deckName.cards[i]);
+        cardBuilder(deckName.cards[i], "deck");
     }
 }
 
-function cardBuilder(card) {
-    let newcard = document.createElement("div");
-    let icon = '';
-    if (card.suit == 'Hearts') {
-        icon = '♥';
-        newcard.className = 'card red';
-    }
-    else if (card.suit == 'Spades') {
-        icon = '♠';
-        newcard.className = 'card';
-    }
-    else if (card.suit == 'Diamonds') {
-        icon = '♦';
-        newcard.className = 'card red';
-    }
-    else {
-        icon = '♣'
-        newcard.className = 'card';;
-    }
-    newcard.innerHTML = `${card.rank}<p class="cardsuit">${icon}</p>`;
-    document.getElementById("deck").appendChild(newcard);
-}
-
+// this function resets the player hand html then iterates over all the card objects in the player, callng cardBuilder for each
 function showDealt(dealtcards) {
     document.getElementById('dealt').innerHTML = '';
     for (let i = 0; i < dealtcards.length; i++) {
-        addHand(dealtcards[i]);
+        cardBuilder(dealtcards[i], "dealt");
     }
-}
-
-function addHand(card) {
-    let newcard = document.createElement("div");
-    let icon = '';
-    if (card.suit == 'Hearts') {
-        icon = '♥';
-        newcard.className = 'card red';
-    }
-    else if (card.suit == 'Spades') {
-        icon = '♠';
-        newcard.className = 'card';
-    }
-    else if (card.suit == 'Diamonds') {
-        icon = '♦';
-        newcard.className = 'card red';
-    }
-    else {
-        icon = '♣'
-        newcard.className = 'card';;
-    }
-    newcard.innerHTML = `${card.rank}<p class="cardsuit">${icon}</p>`;
-    document.getElementById("dealt").appendChild(newcard);
 }
 
 // test setup
 const testDeck = new Deck();
+const testPlayer = new Player("Evan");
 testDeck.makeDeck(1);
 testDeck.shuffleDeck();
 testDeck.cutDeck();
 showDeck(testDeck);
-let testHand = [];
+
 
 // buttons
 const dealButton = document.getElementById("dealbutton");
 dealButton.addEventListener("click", function () {
-    testHand = testHand.concat(testDeck.dealCard())
-    showDealt(testHand);
+    testPlayer.cards = testPlayer.cards.concat(testDeck.dealCard())
+    showDealt(testPlayer.cards);
     showDeck(testDeck);
 })
 
 const deal5Button = document.getElementById("deal5button");
 deal5Button.addEventListener("click", function () {
-    testHand = testHand.concat(testDeck.dealCards(5))
-    showDealt(testHand);
+    testPlayer.cards = testPlayer.cards.concat(testDeck.dealCards(5))
+   // testHand = testHand.concat(testDeck.dealCards(5))
+    showDealt(testPlayer.cards);
     showDeck(testDeck);
 })
 
